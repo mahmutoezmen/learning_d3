@@ -1,6 +1,6 @@
 # Interactive Scatter Plot with Brushing
 
-This is a JavaScript code that creates an interactive scatter plot with brushing functionality using the D3.js library. The scatter plot displays data from the Iris dataset and allows users to brush/select data points within a specified region.
+**05_brushing_scatter_plot_with_accompanying_data_table.html** file creates an interactive scatter plot with brushing functionality using the D3.js library. The scatter plot displays data from the Iris dataset and allows users to brush/select data points within a specified region.
 
 ## Prerequisites
 - D3.js library (v4) is required. It is loaded from the following URL:
@@ -45,4 +45,4 @@ This is a JavaScript code that creates an interactive scatter plot with brushing
     - It appends the table header based on the columns of the data.
     - It appends table rows and cells to display the values of each data point.
 
-That's it! With this code, you can create an interactive scatter plot with brushing functionality and display the brushed data in a table. Feel free to modify the code to fit your specific requirements.
+That's it! With this code, you can create an interactive scatter plot with brushing functionality and display the brushed data in a table.
