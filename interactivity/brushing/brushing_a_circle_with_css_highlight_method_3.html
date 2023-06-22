@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
+
+<!-- style of selected circles -->
+<style>
+.selected {
+  fill: red;
+  opacity: 1
+}
+</style>
+
+<script>
+// Start by creating the svg area
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+  .attr("width", 400)
+  .attr("height", 400);
+
+// Create the circle element
+var circle = svg.append('circle')
+  .attr("cx", 200)
+  .attr("cy", 200)
+  .attr("r", 40)
+  .attr("fill", "#69b3a2");
+
+// Calculate the brush area coordinates based on the circle's position and radius
+var circleX = +circle.attr("cx");
+var circleY = +circle.attr("cy");
+var circleRadius = +circle.attr("r");
+var brushX0 = circleX - circleRadius;
+var brushY0 = circleY - circleRadius;
+var brushX1 = circleX + circleRadius;
+var brushY1 = circleY + circleRadius;
+
+// Add brushing
+svg.call(d3.brush()                     // Add the brush feature using the d3.brush function
+  .extent([[0, 0], [400, 400]])       // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+  .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
+);
+
+// Function that is triggered when brushing is performed
+function updateChart() {
+
+  // Get the selection coordinate
+  extent = d3.event.selection   // looks like [ [12,11], [132,178]]
+
+  // Is the circle in the selection?
+  isBrushed = extent[0][0] <= circle.attr("cx") && extent[1][0] >= circle.attr("cx") && // Check X coordinate
+      // x-axis  top-left                        x-axis bottom-right
+      
+    extent[0][1] <= circle.attr("cy") && extent[1][1] >= circle.attr("cy")  // And Y coordinate
+   // y-axis top-left                   y-axis bottom-right
+   /*
+   If all four conditions are true, it means that the circle's center is within the brush selection area, and the variable isBrushed is set to true.
+   Otherwise, if any of the conditions are false, it means the circle is outside the brush selection area, and isBrushed is set to false.
+   */
+
+
+  // Circle is red if in the selection, original color otherwise
+  //This class determines the fill color of the circle, making it red if the circle is within the brush selection area and keeping the original color otherwise.
+  circle.classed("selected", isBrushed)
+}
+</script>
