@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Scatter Plot with Brushing</title>
+  <style>
+    .table-container {
+      margin-top: 20px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <svg width="500" height="300"></svg>
+  <div class="table-container">
+    <table id="data-table"></table>
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    // Sample data
+    const data = [
+      { x: 10, y: 20 },
+      { x: 30, y: 40 },
+      { x: 50, y: 60 },
+      { x: 70, y: 80 },
+      { x: 90, y: 100 },
+      { x: 110, y: 120 },
+      { x: 130, y: 140 },
+      { x: 150, y: 160 },
+      { x: 170, y: 180 },
+      { x: 190, y: 200 }
+    ];
+
+    const width = 500;
+    const height = 300;
+
+    // Create SVG
+    const svg = d3.select("svg");
+
+    // Create scatter plot
+    const scatterPlot = svg.selectAll("circle")
+      .data(data)
+      .enter()
+      .append("circle")
+      .attr("cx", d => d.x)
+      .attr("cy", d => d.y)
+      .attr("r", 5)
+      .style("fill", "steelblue");
+
+    // Create brush
+    const brush = d3.brush()
+      .extent([[0, 0], [width, height]])
+      .on("end", brushed);
+
+    svg.append("g")
+      .attr("class", "brush")
+      .call(brush);
+
+    // Function to handle brushing event
+    function brushed(event) {
+      if (!event.selection) return;
+
+      const [[x0, y0], [x1, y1]] = event.selection;
+      const brushedData = data.filter(d =>
+        d.x >= x0 && d.x <= x1 && d.y >= y0 && d.y <= y1
+      );
+
+      updateDataTable(brushedData);
+    }
+
+    // Function to update the data table
+    function updateDataTable(data) {
+      const table = d3.select("#data-table");
+      table.selectAll("*").remove(); // Clear existing table
+
+      const columns = ["X", "Y"];
+
+      // Append table header
+      table.append("tr")
+        .selectAll("th")
+        .data(columns)
+        .enter()
+        .append("th")
+        .text(d => d);
+
+      // Append table rows
+      const rows = table.selectAll("tr.data-row")
+        .data(data)
+        .enter()
+        .append("tr")
+        .attr("class", "data-row");
+
+      // Append cells to rows
+      rows.selectAll("td")
+        .data(d => Object.values(d))
+        .enter()
+        .append("td")
+        .text(d => d);
+    }
+
+    // A function that set idleTimeOut to null
+  var idleTimeout
+  function idled() { idleTimeout = null; }
+
+  // A function that update the chart for given boundaries
+  function updateChart() {
+
+    extent = d3.event.selection
+
+    // If no selection, back to initial coordinate. Otherwise, update X axis domain
+    if(!extent){
+      if (!idleTimeout) return idleTimeout = setTimeout(idled, 350); // This allows to wait a little bit
+      x.domain([ 4,8])
+    }else{
+      x.domain([ x.invert(extent[0]), x.invert(extent[1]) ])
+      scatter.select(".brush").call(brush.move, null) // This remove the grey brush area as soon as the selection has been done
+    }
+
+    // Update axis and circle position
+    xAxis.transition().duration(1000).call(d3.axisBottom(x))
+    scatter
+      .selectAll("circle")
+      .transition().duration(1000)
+      .attr("cx", function (d) { return x(d.Sepal_Length); } )
+      .attr("cy", function (d) { return y(d.Petal_Length); } )
+
+    }
+
+  </script>
+</body>
+</html>
