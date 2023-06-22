@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
+
+<script>
+// Start by creating the svg area
+var svg = d3.select("#my_dataviz")
+            .append("svg")
+            .attr("width", 400)
+            .attr("height", 400);
+
+// Create the circle element
+var circle = svg.append('circle')
+              .attr("cx", 200)
+              .attr("cy", 200)
+              .attr("r", 40)
+              .attr("fill", "#69b3a2");
+
+// Calculate the brush area coordinates based on the circle's position and radius
+var circleX = +circle.attr("cx");
+var circleY = +circle.attr("cy");
+var circleRadius = +circle.attr("r");
+var brushX0 = circleX - circleRadius;
+var brushY0 = circleY - circleRadius;
+var brushX1 = circleX + circleRadius;
+var brushY1 = circleY + circleRadius;
+
+// Add brushing
+svg.call(d3.brush()                     // Add the brush feature using the d3.brush function
+    .extent([[brushX0, brushY0], [brushX1, brushY1]])       // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+);
+
+
+</script>
